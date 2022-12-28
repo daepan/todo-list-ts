@@ -1,8 +1,15 @@
 import React from 'react';
 import { useQuery } from 'react-query';
 import styled  from 'styled-components';
+import Checkbox from './components/CheckBox';
 import * as api from './api';
 
+interface TodoListItemElements {
+  userId: number
+  id: number
+  title: string
+  completed: boolean
+}
 
 const Main = styled.div`
   width: 100vw;
@@ -10,8 +17,7 @@ const Main = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: black;
-  opacity: 0.5;
+  background-color:rgba(0, 0, 0, 0.8);
 `;
 
 const TodoListBox = styled.div`
@@ -25,7 +31,8 @@ const TodoListBox = styled.div`
 const TodoHeader = styled.div`
   width: 512px;
   height: 100px;
-  border: 1px solid red;  
+  color: rgb(0, 0, 128);
+  font-size: 80px;  
 `
 
 const TodoContent = styled.div`
@@ -39,37 +46,81 @@ const TodoListItem = styled.div`
   height: 70px;
   display: flex;
   border: 1px solid blue;
+  align-items: center;
+`
+const ItemTitle = styled.div`
+  width: 440px;
+  margin-left: 10px;
+`
+
+const ItemDeleteButton = styled.button`
+  width: 20px;
+  height: 20px;
+  margin: 10px;
 `
 
 const TodoFooter = styled.div`
   width: 512px;
   height: 100px;
-  border: 1px solid red;  
+  border: 1px solid red;
+  display: flex;
+  align-items: center;
 `
 
-function App() {
-  const { data: todoList } = useQuery('todoList', api.getTodoList); 
+const TodoAddInput = styled.input`
+  width: 440px;
+  margin: 10px;
+` 
 
+const TodoAddButton = styled.button`
+  width: 55px;
+  height: 35px;
+` 
+
+const deleteTodoListItem = () => {
+  console.log("delete");
+}
+
+const onHandleTodoListCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
+  console.log("check");
+  console.log(e.target.checked);
+}
+
+
+function App() {
+  const { data: todoList, isLoading } = useQuery('todoList', api.fetchTodoList);
+  const [text, setText] = React.useState('');
+
+  if (isLoading) return <div>Loading...</div>;
+
+  const onChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setText(e.target.value);
+  }
+  const onClickAddButton = () => {
+    setText('');
+  }
+  
   console.log(todoList);
   return (
     <Main>
       <TodoListBox>
         <TodoHeader>
-          오늘 할 일  
+          Todo-List
         </TodoHeader>
         <TodoContent>
           {
-           todoList !== undefined && (
-            todoList.map((items: any) => (
+            todoList.map((items: TodoListItemElements) => (
               <TodoListItem key={items.id}>
-                {items.id}
+                <Checkbox checked={items.completed} onChange={onHandleTodoListCheck} />
+                <ItemTitle>{items.title}</ItemTitle>
+                <ItemDeleteButton onClick={() => deleteTodoListItem()}>X</ItemDeleteButton>
               </TodoListItem>
             ))
-           )
           }
         </TodoContent>
         <TodoFooter>
-          추가하기
+          <TodoAddInput type="text" value={text} onChange={onChangeText} placeholder="할 일을 입력해주세요" />
+          <TodoAddButton type="submit" onClick={onClickAddButton}>Add</TodoAddButton>
         </TodoFooter>
       </TodoListBox>
     </Main>
