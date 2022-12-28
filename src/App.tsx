@@ -26,30 +26,40 @@ const TodoListBox = styled.div`
   display: flex;
   flex-direction: column;
   background-color: white;
+  border-radius: 10% ;
 `
 
 const TodoHeader = styled.div`
   width: 512px;
   height: 100px;
-  color: rgb(0, 0, 128);
-  font-size: 80px;  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgb(0, 0, 204);
+  font-size: 65px;  
 `
 
 const TodoContent = styled.div`
   width: 512px;
   height: 514px;
-  border: 1px solid black;
   overflow: scroll;
 `
 const TodoListItem = styled.div`
-  width: 512px;
+  width: 492px;
   height: 70px;
   display: flex;
-  border: 1px solid blue;
   align-items: center;
+  justify-content: center;
+  margin: 10px 10px;
+  color: #333;
+  background-color: rgba(51,51,255,.5);
+  margin-bottom: 15px;
+  border-radius: 21px;
+  box-shadow: 5px 5px 5px 5px gray;
+  filter: brightness(1.75);
 `
 const ItemTitle = styled.div`
-  width: 440px;
+  width: 400px;
   margin-left: 10px;
 `
 
@@ -59,27 +69,63 @@ const ItemCheckBox = styled.input`
 `
 
 const ItemDeleteButton = styled.button`
-  width: 20px;
-  height: 20px;
-  margin: 10px;
+  width: 30px;
+  height: 30px;
+  float:right;
+  display:flex;
+  text-align: center;
+  align-items:center;
+  justify-content:center;
+  font-size: 1.5em;
+  background-color: rgb(255, 0, 117);
+  outline: 0;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  :hover,active {
+    background-color: initial;
+    background-position: 0 0;
+    color: #FF4742;
+  }
+  :active {
+    opacity: .5;
+  }
 `
 
 const TodoFooter = styled.div`
-  width: 512px;
+  width: 492px;
   height: 100px;
-  border: 1px solid red;
   display: flex;
   align-items: center;
+  justify-content: center;
 `
 
 const TodoAddInput = styled.input`
-  width: 440px;
+  width: 370px;
+  height: 40px;
   margin: 10px;
+  font-size: 15px;
+  border: 0;
+  border-radius: 15px;
+  outline: none;
+  padding-left: 10px;
+  background-color: rgb(233, 233, 233);
 ` 
 
 const TodoAddButton = styled.button`
   width: 55px;
   height: 35px;
+  float:right;
+  display:flex;
+  text-align: center;
+  align-items:center;
+  justify-content:center;
+  font-size: 1.5em;
+  background-color: rgb(255, 100, 100);
+  outline: 0;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
 ` 
 
 function App() {
