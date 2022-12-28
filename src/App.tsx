@@ -34,6 +34,13 @@ const TodoContent = styled.div`
   border: 1px solid black;
   overflow: scroll;
 `
+const TodoListItem = styled.div`
+  width: 512px;
+  height: 70px;
+  display: flex;
+  border: 1px solid blue;
+`
+
 const TodoFooter = styled.div`
   width: 512px;
   height: 100px;
@@ -41,6 +48,9 @@ const TodoFooter = styled.div`
 `
 
 function App() {
+  const { data: todoList } = useQuery('todoList', api.getTodoList); 
+
+  console.log(todoList);
   return (
     <Main>
       <TodoListBox>
@@ -48,6 +58,15 @@ function App() {
           오늘 할 일  
         </TodoHeader>
         <TodoContent>
+          {
+           todoList !== undefined && (
+            todoList.map((items: any) => (
+              <TodoListItem key={items.id}>
+                {items.id}
+              </TodoListItem>
+            ))
+           )
+          }
         </TodoContent>
         <TodoFooter>
           추가하기
