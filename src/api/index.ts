@@ -13,7 +13,7 @@ export const deleteTodoListItem = async (Id: number) => {
 
 export const addTodoListItem = async (todoItem: TodoItemRequest) => {
   await fetch(`https://jsonplaceholder.typicode.com/todos`, {
-    method: 'PUT',
+    method: 'POST',
     body: JSON.stringify({
       userId: todoItem.id,
       title: todoItem.title,
