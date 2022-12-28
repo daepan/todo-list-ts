@@ -1,5 +1,6 @@
 import React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import useTodoList from './hooks/useTodoList';
 import styled  from 'styled-components';
 import * as api from './api';
@@ -26,7 +27,8 @@ const TodoListBox = styled.div`
   display: flex;
   flex-direction: column;
   background-color: white;
-  border-radius: 10% ;
+  border-radius: 10%;
+  box-shadow: 5px 5px 5px 5px black;
 `
 
 const TodoHeader = styled.div`
@@ -57,6 +59,20 @@ const TodoListItem = styled.div`
   border-radius: 21px;
   box-shadow: 5px 5px 5px 5px gray;
   filter: brightness(1.75);
+
+  &.item-enter {
+    opacity: 0;
+  }
+
+  &.item-enter-active {
+    opacity: 0.9;
+    transition: all 500ms;
+  }
+
+  &.item-exit {
+    opacity: 0.01;
+    transition: opacity 1000ms ease-out;
+  }
 `
 const ItemTitle = styled.div`
   width: 400px;
@@ -110,6 +126,7 @@ const TodoAddInput = styled.input`
   outline: none;
   padding-left: 10px;
   background-color: rgb(233, 233, 233);
+  box-shadow: 5px 5px 5px 5px gray;
 ` 
 
 const TodoAddButton = styled.button`
@@ -126,6 +143,7 @@ const TodoAddButton = styled.button`
   border-radius: 10px;
   border: none;
   cursor: pointer;
+  box-shadow: 5px 5px 5px 5px gray;
 ` 
 
 function App() {
@@ -149,7 +167,6 @@ function App() {
   const addTodoListItem = useMutation(api.addTodoListItem, {
     onSuccess: () => {
       console.log('추가되었습니다.');
-      todoRef.current!.focus();
       queryClient.invalidateQueries("todoList");
     },
   });
@@ -167,6 +184,7 @@ function App() {
   const onHandleAddItem = () => {
     const todoText = String(todoRef.current?.value);
     setTodoItem((current: string[]) => [...current, {id: todoItem.length + 1, title: todoText, complted: false, userId: 1}]);
+    todoRef.current!.focus();
     addTodoListItem.mutate({id: todoItem.length + 1, title: todoText, completed: false, userId: 1})
   }
 
@@ -179,7 +197,7 @@ function App() {
     <Main>
       <TodoListBox>
         <TodoHeader>
-          Todo-List
+          TodoList
         </TodoHeader>
         <TodoContent>
           {
@@ -188,16 +206,33 @@ function App() {
                 loading...
               </div>
             ) : (
-              todoItem.map((items: TodoListItemElements) => (
-                <TodoListItem key={items.id}>
-                  <ItemCheckBox
-                    type="checkbox"
-                    checked={items.completed} 
-                    onChange={() => onHandleCheckedItem(items)} />
-                  <ItemTitle>{items.title}</ItemTitle>
-                  <ItemDeleteButton onClick={() => onHandleDeleteItem(items.id)}>X</ItemDeleteButton>
-                </TodoListItem>
-              ))
+              <TransitionGroup>
+              {
+                todoItem.map((items: TodoListItemElements) => (
+                  <CSSTransition
+                    key={items.id}
+                    timeout={500}
+                    classNames="item"
+                    mountOnEnter
+                    unmountOnExit
+                    onExit={() => {
+                      console.log("jeje");
+                    }}
+                    onEnter={() => {
+                      console.log("jeje");
+                    }}>
+                    <TodoListItem>
+                      <ItemCheckBox
+                        type="checkbox"
+                        checked={items.completed} 
+                        onChange={() => onHandleCheckedItem(items)} />
+                      <ItemTitle>{items.title}</ItemTitle>
+                      <ItemDeleteButton onClick={() => onHandleDeleteItem(items.id)}>X</ItemDeleteButton>
+                    </TodoListItem>
+                  </CSSTransition>
+                ))
+              }
+              </TransitionGroup>
             )
           }
         </TodoContent>
