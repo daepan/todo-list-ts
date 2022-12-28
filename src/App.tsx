@@ -1,7 +1,7 @@
 import React from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
+import useTodoList from './hooks/useTodoList';
 import styled  from 'styled-components';
-import Checkbox from './components/CheckBox';
 import * as api from './api';
 
 interface TodoListItemElements {
@@ -53,6 +53,11 @@ const ItemTitle = styled.div`
   margin-left: 10px;
 `
 
+const ItemCheckBox = styled.input`
+  width: 20px;
+  height: 20px;
+`
+
 const ItemDeleteButton = styled.button`
   width: 20px;
   height: 20px;
@@ -77,28 +82,51 @@ const TodoAddButton = styled.button`
   height: 35px;
 ` 
 
-const deleteTodoListItem = () => {
-  console.log("delete");
-}
-
-const onHandleTodoListCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
-  console.log("check");
-  console.log(e.target.checked);
-}
-
-
 function App() {
-  const { data: todoList, isLoading } = useQuery('todoList', api.fetchTodoList);
-  const [text, setText] = React.useState('');
+  const todoList = useTodoList();
+  const [todoItem, setTodoItem] = React.useState(todoList);
+  const todoRef = React.useRef<HTMLInputElement | null>(null);
+  const queryClient = useQueryClient();
 
-  if (isLoading) return <div>Loading...</div>;
+  const deleteTodoListItem = useMutation(api.deleteTodoListItem, {
+    onSuccess: () => {
+      console.log("삭제되었습니다.")
+    }
+  })
 
-  const onChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setText(e.target.value);
+  const updateTodoListItem = useMutation(api.updateTodoListItem, {
+    onSuccess: () => {
+      console.log('변경되었습니다.')
+    }
+  })
+
+  const addTodoListItem = useMutation(api.addTodoListItem, {
+    onSuccess: () => {
+      console.log('추가되었습니다.');
+      todoRef.current!.focus();
+      queryClient.invalidateQueries("todoList");
+    },
+  });
+
+  const onHandleDeleteItem = (id: number) => {
+    deleteTodoListItem.mutate(id)
+    setTodoItem(todoItem.filter((item: TodoListItemElements) => item.id !== id));
+  };
+
+  const onHandleCheckedItem = (items: TodoListItemElements) => {
+    items.completed = !items.completed;
+    updateTodoListItem.mutate({id: items.id, completed: items.completed})
   }
-  const onClickAddButton = () => {
-    setText('');
+
+  const onHandleAddItem = () => {
+    const todoText = String(todoRef.current?.value);
+    setTodoItem((current: string[]) => [...current, {id: todoItem.length + 1, title: todoText, complted: false, userId: 1}]);
+    addTodoListItem.mutate({id: todoItem.length + 1, title: todoText, completed: false, userId: 1})
   }
+
+  React.useEffect(()=>{
+    setTodoItem(todoList);
+  }, [todoList])
   
   console.log(todoList);
   return (
@@ -109,18 +137,35 @@ function App() {
         </TodoHeader>
         <TodoContent>
           {
-            todoList.map((items: TodoListItemElements) => (
-              <TodoListItem key={items.id}>
-                <Checkbox checked={items.completed} onChange={onHandleTodoListCheck} />
-                <ItemTitle>{items.title}</ItemTitle>
-                <ItemDeleteButton onClick={() => deleteTodoListItem()}>X</ItemDeleteButton>
-              </TodoListItem>
-            ))
+            todoItem === null ? (
+              <div>
+                loading...
+              </div>
+            ) : (
+              todoItem.map((items: TodoListItemElements) => (
+                <TodoListItem key={items.id}>
+                  <ItemCheckBox
+                    type="checkbox"
+                    checked={items.completed} 
+                    onChange={() => onHandleCheckedItem(items)} />
+                  <ItemTitle>{items.title}</ItemTitle>
+                  <ItemDeleteButton onClick={() => onHandleDeleteItem(items.id)}>X</ItemDeleteButton>
+                </TodoListItem>
+              ))
+            )
           }
         </TodoContent>
         <TodoFooter>
-          <TodoAddInput type="text" value={text} onChange={onChangeText} placeholder="할 일을 입력해주세요" />
-          <TodoAddButton type="submit" onClick={onClickAddButton}>Add</TodoAddButton>
+          <TodoAddInput
+            ref={(inputRef) => todoRef.current = inputRef}
+            type="text"
+            placeholder="할 일을 입력해주세요"
+          />
+          <TodoAddButton
+            onClick={onHandleAddItem}
+          >
+            Add
+          </TodoAddButton>
         </TodoFooter>
       </TodoListBox>
     </Main>
