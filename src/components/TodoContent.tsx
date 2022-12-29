@@ -1,5 +1,6 @@
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import { TodoItemRequest } from '../api/interface';
+import { ReactComponent as LoadingSpinner } from '../assets/loading-spinner.svg';
 import styled from 'styled-components';
 
 interface TodoContentProps {
@@ -7,6 +8,12 @@ interface TodoContentProps {
   onHandleDeleteItem: (id: number) => void
   onHandleCheckedItem: (items: TodoItemRequest) => void
 }
+
+const LoadingWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 
 const TodoContentWrapper = styled.div`
   width: 512px;
@@ -81,9 +88,9 @@ function TodoContent({todoItem, onHandleCheckedItem, onHandleDeleteItem}: TodoCo
     <TodoContentWrapper>
       {
         todoItem === null ? (
-          <div>
-            loading...
-          </div>
+          <LoadingWrapper>
+            <LoadingSpinner />
+          </LoadingWrapper>
         ) : (
           <TransitionGroup>
             {
