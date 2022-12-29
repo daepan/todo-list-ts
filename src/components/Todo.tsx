@@ -1,5 +1,5 @@
-import TodoHeader from "./Header/TodoHeader";
-import TodoContent from "./Content/TodoContent";
+import TodoHeader from "./TodoHeader";
+import TodoContent from "./TodoContent";
 import styled from "styled-components"
 
 const TodoListBox = styled.div`
