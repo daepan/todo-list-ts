@@ -7,10 +7,17 @@ interface TodoItemRequest {
 
 interface CompletedChangeRequest {
   id: number
-  completed: boolean
+  title?: string
+  completed?: boolean
 }
+
+interface DeleteTodoItemRequest {
+  id: number
+}
+
 
 export type {
   TodoItemRequest,
   CompletedChangeRequest,
+  DeleteTodoItemRequest,
 }
