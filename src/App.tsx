@@ -2,14 +2,8 @@ import React from 'react';
 import TodoContent from './components/TodoContent';
 import useTodoList from './hooks/useTodoList';
 import useTodoListMutation from './hooks/useTodoListMutation';
+import { TodoItemRequest } from './api/interface';
 import styled  from 'styled-components';
-
-interface TodoListItemElements {
-  userId: number
-  id: number
-  title: string
-  completed: boolean
-}
 
 const Main = styled.div`
   width: 100vw;
@@ -86,10 +80,10 @@ function App() {
 
   const onHandleDeleteItem = (id: number) => {
     deleteTodoListItem.mutate(id)
-    setTodoItem(todoItem.filter((item: TodoListItemElements) => item.id !== id));
+    setTodoItem(todoItem.filter((item: TodoItemRequest) => item.id !== id));
   };
 
-  const onHandleCheckedItem = (items: TodoListItemElements) => {
+  const onHandleCheckedItem = (items: TodoItemRequest) => {
     items.completed = !items.completed;
     updateTodoListItem.mutate({id: items.id, completed: items.completed})
   }
