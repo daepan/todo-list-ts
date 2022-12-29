@@ -98,8 +98,7 @@ function App() {
   React.useEffect(()=>{
     setTodoItem(todoList);
   }, [todoList])
-  
-  console.log(todoList);
+
   return (
     <Main>
       <TodoListBox>
