@@ -1,38 +1,25 @@
-import { CompletedChangeRequest, TodoItemRequest} from './interface';
+import axios from "axios";
+import { TodoItemRequest } from "./interface";
 
-export const fetchTodoList = async () => {
-  const res = await fetch("https://jsonplaceholder.typicode.com/todos?_limit=5");
-  return res.json();
-}
-
-export const deleteTodoListItem = async (Id: number) => {
-  await fetch(`https://jsonplaceholder.typicode.com/todos/${Id}`, {
-    method: 'DELETE',
-  })
-}
-
-export const addTodoListItem = async (todoItem: TodoItemRequest) => {
-  await fetch(`https://jsonplaceholder.typicode.com/todos`, {
-    method: 'POST',
-    body: JSON.stringify({
-      userId: todoItem.id,
-      title: todoItem.title,
-      completed: todoItem.completed,
-    }),
-    headers: {
-      'Content-type': 'application/json; charset=UTF-8',
+export const TodoListApi = {
+    get: async (): Promise<TodoItemRequest[]> => {
+        return axios.get('https://jsonplaceholder.typicode.com/todos').then((res: any) => {
+            return res.data
+        })
     },
-  })
-}
 
-export const updateTodoListItem = async (todoItem: CompletedChangeRequest) => {
-  await fetch(`https://jsonplaceholder.typicode.com/todos/${todoItem.id}`, {
-    method: 'PATCH',
-    body: JSON.stringify({
-      completed: todoItem.completed
-    }),
-    headers: {
-      'Content-type': 'application/json; charset=UTF-8',
+    put: async (id: number, title: string, completed: boolean): Promise<TodoItemRequest> => {
+        return axios.put(`https://jsonplaceholder.typicode.com/todos/${id}`, {
+            title: title,
+            completed: completed
+        }).then((res: any) => {
+            return res.data
+        })
     },
-  })
+
+    delete: async (id: number) => {
+        return axios.delete(`https://jsonplaceholder.typicode.com/todos/${id}`).then((res: any) => {
+            return res.data
+        })
+    }
 }
