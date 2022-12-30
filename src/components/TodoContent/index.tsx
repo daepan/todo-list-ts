@@ -1,19 +1,22 @@
+import React from "react";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import { TodoItemRequest } from 'api/interface';
 import TodoListItem from "./TodoListItem";
+import { useTodoListData } from "hooks";
 import { ReactComponent as LoadingSpinner } from '../../assets/loading-spinner.svg';
+import Modal from "components/Modal";
 import styled from 'styled-components';
 
-const LoadingWrapper = styled.div`
+const TodoContentWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow: scroll;
+  padding: 20px 5px;
   display: flex;
   justify-content: center;
-  align-items: center;
 `
 
-const TodoContentWrapper = styled.div`
-  width: 512px;
-  height: 514px;
-  overflow: scroll;
+const LoadingWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -52,7 +55,9 @@ function TodoContent() {
       "completed": false
     },
   ]
-
+  const todo = useTodoListData();
+  
+  console.log(todo);
   return (
     <TodoContentWrapper>
       {
@@ -63,7 +68,7 @@ function TodoContent() {
         ) : (
           <TransitionGroup>
             {
-              todoList?.map((items: TodoItemRequest) => (
+              todo?.map((items: TodoItemRequest) => (
                 <CSSTransition
                   key={items.id}
                   timeout={500}
@@ -71,7 +76,10 @@ function TodoContent() {
                   mountOnEnter
                   unmountOnExit
                 >
-                  <TodoListItem />
+                  <TodoListItem
+                    key={items.id}
+                    todoItem={items}
+                  />
                 </CSSTransition>
               ))
             }

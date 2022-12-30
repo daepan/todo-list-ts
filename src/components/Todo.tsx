@@ -3,14 +3,17 @@ import TodoContent from "./TodoContent";
 import styled from "styled-components"
 
 const TodoListBox = styled.div`
-  width: 512px;
-  height: 614px;
+  width: 788px;
+  height: 500px;
   display: flex;
   flex-direction: column;
   background-color: white;
   justify-content: center;
-  border-radius: 10%;
-  box-shadow: 5px 5px 5px 5px black;
+  align-items: center;
+  border-radius: 5px;
+  border: 1px solid rgb(0, 0, 0, 0.5);
+  box-shadow: 1px 1px 1px 1px gray;
+  padding: 20px;
 `
 
 function Todo() {
