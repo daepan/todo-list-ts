@@ -1,10 +1,7 @@
-import React from "react";
-import { TransitionGroup, CSSTransition } from "react-transition-group";
 import { TodoItemRequest } from 'api/interface';
 import TodoListItem from "./TodoListItem";
 import { useTodoListData } from "hooks";
 import { ReactComponent as LoadingSpinner } from '../../assets/loading-spinner.svg';
-import Modal from "components/Modal";
 import styled from 'styled-components';
 
 const TodoContentWrapper = styled.div`
@@ -14,6 +11,12 @@ const TodoContentWrapper = styled.div`
   padding: 20px 5px;
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-direction: column;
+`
+
+const ItemWrapper = styled.div`
+  height: 100%;
 `
 
 const LoadingWrapper = styled.div`
@@ -66,24 +69,16 @@ function TodoContent() {
             <LoadingSpinner />
           </LoadingWrapper>
         ) : (
-          <TransitionGroup>
+          <ItemWrapper>
             {
               todo?.map((items: TodoItemRequest) => (
-                <CSSTransition
+                <TodoListItem
                   key={items.id}
-                  timeout={500}
-                  classNames="item"
-                  mountOnEnter
-                  unmountOnExit
-                >
-                  <TodoListItem
-                    key={items.id}
-                    todoItem={items}
-                  />
-                </CSSTransition>
+                  todoItem={items}
+                />
               ))
             }
-          </TransitionGroup>
+          </ItemWrapper>
         )
       }
     </TodoContentWrapper>

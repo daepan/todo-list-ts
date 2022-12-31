@@ -69,7 +69,7 @@ function Modal({
         nodeRef={nodeRef}
       >
         <ModalWrapper ref={nodeRef}>
-          <button onClick={handleClose}>
+          <button onClick={() => handleClose()}>
             Close
           </button>
           <ModalContent>{children}</ModalContent>

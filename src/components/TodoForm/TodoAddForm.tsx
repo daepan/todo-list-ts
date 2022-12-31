@@ -1,4 +1,5 @@
 import React from "react";
+import { useAddTodo } from "hooks";
 import styled from "styled-components";
 
 const FormWrapper = styled.div`
@@ -18,12 +19,12 @@ const TodoTitleInput = styled.input`
 
 
 function TodoAddForm() {
-  // const addTodo = useAddTodo();
+  const addTodo = useAddTodo();
   const [todoTitle, setTodoTitle] = React.useState("");
   const onHandleTitle = (e: React.ChangeEvent<HTMLInputElement>) => setTodoTitle(e.target.value);
   const onHandleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // addTodo.mutate({userId: 1, title: todoTitle, completed: false});
+    addTodo.mutate({userId: 1, title: todoTitle, completed: false});
   }
 
   return (

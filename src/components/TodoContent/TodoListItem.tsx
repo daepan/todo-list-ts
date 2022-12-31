@@ -71,7 +71,6 @@ function TodoListItem(todoItem: ListItemProps) {
   const itemDelete = useDeleteTodo();
   const [isOpen, setIsOpen] = React.useState(false);
   const onHandleDeleteTask = (id: number) => {
-    console.log(id);
     itemDelete.mutateAsync(id);
   }
   const onHandleEditTask = () => {
