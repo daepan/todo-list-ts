@@ -1,5 +1,5 @@
 import { useQuery, UseQueryResult, useQueryClient, useMutation } from "react-query";
-import { TodoItemRequest, TodoChangeRequest, AddTodoItemRequest } from "api/interface";
+import { TodoItemRequest, TodoChangeRequest, AddTodoItemRequest, DeleteTodoItemRequest } from "api/interface";
 import { TodoListApi } from "api";
 
 export const useTodoListData = () => {
@@ -43,7 +43,7 @@ export const useUpdateTodo = () => {
 export const useDeleteTodo = () => {
     const queryClient = useQueryClient();
     // const { mutate: deleteTodoList } : UseMutationResult<TodoItemRequest, Error, DeleteTodoItemRequest>
-    return useMutation<TodoItemRequest, Error, any>({
+    return useMutation<TodoItemRequest, Error, DeleteTodoItemRequest>({
             mutationKey: 'todoList',
             mutationFn: async ({id}) => {
                 return TodoListApi.delete(id);
@@ -59,7 +59,8 @@ export const useDeleteTodo = () => {
                 // const newTodoList = previousTodoList?.filter((todo) => todo.id !== id);
 
                 // delete array in store 불변성 유지 방법.. 필요 밑에거도 싹다 재렌더링됨..
-                const newTodoList = previousTodoList?.splice(id + 1, 1)
+                console.log(id);
+                const newTodoList = previousTodoList?.splice(id - 1, id);
                 // Optimistically update to the new value
                 queryClient.setQueryData('todoList', previousTodoList?.filter((todo) => todo.id !== id))
 
@@ -95,6 +96,7 @@ export const useAddTodo = () => {
           userId: userId
         }
       }
+
       console.log(previousTodoList);
 
       return {previousTodoList}
