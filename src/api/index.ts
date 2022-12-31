@@ -1,5 +1,5 @@
 import axios from "axios";
-import { TodoItemRequest } from "./interface";
+import { TodoItemRequest, AddTodoItemRequest } from "./interface";
 
 export const TodoListApi = {
     get: async (): Promise<TodoItemRequest[]> => {
@@ -21,5 +21,15 @@ export const TodoListApi = {
         return axios.delete(`https://jsonplaceholder.typicode.com/todos/${id}`).then((res: any) => {
             return res.data
         })
+    },
+
+    add: async (addTodo: AddTodoItemRequest) => {
+      return axios.post('https://jsonplaceholder.typicode.com/todos', {
+        userId: addTodo.userId,
+        title: addTodo.title,
+        completed: addTodo.completed,
+      }).then((res: any) => {
+        return res.data
+      })
     }
 }
